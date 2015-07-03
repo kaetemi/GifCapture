@@ -126,18 +126,34 @@ namespace GifCapture
 				QuantizeSettings qs = new QuantizeSettings();
 				qs.Colors = 256;
 				int timeOffset = 0;
+				int addi = -1;
 				for (int i = 0; i < recorded.Count; ++i)
 				{
 					MagickImage mi = new MagickImage(recorded[i].Bitmap);
 					recorded[i].Bitmap.Dispose();
-					mi.Quantize(qs);
-					progress = i;
-					Invoke(new EmptyCallback(showProgress));
-					mic.Add(mi);
+					int addDelay;
+					if (i == 0 || !mi.Equals(mic[addi]))
+					{
+						mic.Add(mi);
+						++addi;
+						addDelay = 0;
+					}
+					else
+					{
+						addDelay = mic[addi].AnimationDelay;
+					}
 					int delayMs = recorded[((i + 1) < recorded.Count) ? i + 1 : i].Time + timeOffset;
 					int delayCs = delayMs / 10;
 					timeOffset = delayMs - (delayCs * 10);
-					mic[i].AnimationDelay = delayCs;
+					mic[addi].AnimationDelay = delayCs + addDelay;
+					progress = i;
+					Invoke(new EmptyCallback(showProgress));
+				}
+				for (int i = 0; i < mic.Count; ++i)
+				{
+					mic[i].Quantize(qs);
+					progress = i;
+					Invoke(new EmptyCallback(showProgress));
 				}
 				mic.OptimizePlus();
 				mic.Write(saveFileDialog.FileName);

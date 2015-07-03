@@ -31,6 +31,8 @@
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
 			this.toolContainer = new System.Windows.Forms.ToolStripContainer();
+			this.progressTool = new System.Windows.Forms.ToolStrip();
+			this.progressBar = new System.Windows.Forms.ToolStripProgressBar();
 			this.toolStrip = new System.Windows.Forms.ToolStrip();
 			this.recordButton = new System.Windows.Forms.ToolStripButton();
 			this.pauseButton = new System.Windows.Forms.ToolStripButton();
@@ -38,16 +40,14 @@
 			this.eraseButton = new System.Windows.Forms.ToolStripButton();
 			this.sizeLabel = new System.Windows.Forms.ToolStripLabel();
 			this.storageUse = new System.Windows.Forms.ToolStripLabel();
+			this.noFocus = new System.Windows.Forms.ToolStripButton();
 			this.timer = new System.Windows.Forms.Timer(this.components);
 			this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-			this.progressTool = new System.Windows.Forms.ToolStrip();
-			this.progressBar = new System.Windows.Forms.ToolStripProgressBar();
-			this.noFocus = new System.Windows.Forms.ToolStripButton();
 			this.toolContainer.ContentPanel.SuspendLayout();
 			this.toolContainer.TopToolStripPanel.SuspendLayout();
 			this.toolContainer.SuspendLayout();
-			this.toolStrip.SuspendLayout();
 			this.progressTool.SuspendLayout();
+			this.toolStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// toolContainer
@@ -69,6 +69,24 @@
 			// 
 			this.toolContainer.TopToolStripPanel.Controls.Add(this.toolStrip);
 			// 
+			// progressTool
+			// 
+			this.progressTool.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.progressTool.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.progressBar});
+			this.progressTool.Location = new System.Drawing.Point(0, 455);
+			this.progressTool.Name = "progressTool";
+			this.progressTool.Size = new System.Drawing.Size(640, 25);
+			this.progressTool.TabIndex = 0;
+			this.progressTool.Text = "toolStrip1";
+			this.progressTool.Visible = false;
+			// 
+			// progressBar
+			// 
+			this.progressBar.Name = "progressBar";
+			this.progressBar.Size = new System.Drawing.Size(100, 22);
+			this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+			// 
 			// toolStrip
 			// 
 			this.toolStrip.Dock = System.Windows.Forms.DockStyle.None;
@@ -82,7 +100,7 @@
             this.noFocus});
 			this.toolStrip.Location = new System.Drawing.Point(3, 0);
 			this.toolStrip.Name = "toolStrip";
-			this.toolStrip.Size = new System.Drawing.Size(423, 25);
+			this.toolStrip.Size = new System.Drawing.Size(392, 25);
 			this.toolStrip.TabIndex = 0;
 			// 
 			// recordButton
@@ -142,29 +160,6 @@
 			this.storageUse.Size = new System.Drawing.Size(87, 22);
 			this.storageUse.Text = "0 MiB 0 Frames";
 			// 
-			// timer
-			// 
-			this.timer.Interval = 10;
-			this.timer.Tick += new System.EventHandler(this.timer_Tick);
-			// 
-			// progressTool
-			// 
-			this.progressTool.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.progressTool.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.progressBar});
-			this.progressTool.Location = new System.Drawing.Point(0, 455);
-			this.progressTool.Name = "progressTool";
-			this.progressTool.Size = new System.Drawing.Size(640, 25);
-			this.progressTool.TabIndex = 0;
-			this.progressTool.Text = "toolStrip1";
-			this.progressTool.Visible = false;
-			// 
-			// progressBar
-			// 
-			this.progressBar.Name = "progressBar";
-			this.progressBar.Size = new System.Drawing.Size(100, 22);
-			this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-			// 
 			// noFocus
 			// 
 			this.noFocus.Checked = true;
@@ -176,6 +171,16 @@
 			this.noFocus.Name = "noFocus";
 			this.noFocus.Size = new System.Drawing.Size(153, 22);
 			this.noFocus.Text = "Don\'t record while in focus";
+			// 
+			// timer
+			// 
+			this.timer.Interval = 10;
+			this.timer.Tick += new System.EventHandler(this.timer_Tick);
+			// 
+			// saveFileDialog
+			// 
+			this.saveFileDialog.DefaultExt = "gif";
+			this.saveFileDialog.Filter = "GIF|*.gif";
 			// 
 			// MainWindow
 			// 
@@ -195,10 +200,10 @@
 			this.toolContainer.TopToolStripPanel.PerformLayout();
 			this.toolContainer.ResumeLayout(false);
 			this.toolContainer.PerformLayout();
-			this.toolStrip.ResumeLayout(false);
-			this.toolStrip.PerformLayout();
 			this.progressTool.ResumeLayout(false);
 			this.progressTool.PerformLayout();
+			this.toolStrip.ResumeLayout(false);
+			this.toolStrip.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
