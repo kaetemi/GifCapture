@@ -230,6 +230,7 @@ namespace GifCapture
 				MessageBox.Show(exc.ToString());
 				exc = null;
 			}
+			updateRamLabel();
 		}
 
 		private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
