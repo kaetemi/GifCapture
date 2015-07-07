@@ -116,23 +116,50 @@ namespace GifCapture
 
 		Thread t;
 		int progress;
+		int progressMax;
 		string fileName;
 		Exception exc;
 		private void SaveFile()
 		{
 			try
 			{
+				progress = 0;
+				progressMax = (recorded.Count * 4);
+				MagickImage[] mia = new MagickImage[recorded.Count];
+				Parallel.For(0, recorded.Count, (i) =>
+				{
+					mia[i] = new MagickImage(recorded[i].Bitmap);
+					int pr = Interlocked.Increment(ref progress);
+					if (pr % 16 == 0) Invoke(new EmptyCallback(showProgress));
+				});
+				progressMax = progress + (mia.Length * 3);
+				bool[] mid = new bool[mia.Length];
+				mid[0] = false;
+				Parallel.For(1, mia.Length, (i) =>
+				{
+					mid[i] = mia[i].Equals(mia[i - 1]);
+					int pr = Interlocked.Increment(ref progress);
+					if (pr % 4 == 0) Invoke(new EmptyCallback(showProgress));
+				});
+				Parallel.For(1, mia.Length, (i) =>
+				{
+					if (mid[i])
+					{
+						mia[i].Dispose();
+						mia[i] = null;
+					}
+				});
+				progressMax = progress + (mia.Length * 2);
 				MagickImageCollection mic = new MagickImageCollection();
 				QuantizeSettings qs = new QuantizeSettings();
 				qs.Colors = 256;
 				int timeOffset = 0;
 				int addi = -1;
-				for (int i = 0; i < recorded.Count; ++i)
+				for (int i = 0; i < mia.Length; ++i)
 				{
-					MagickImage mi = new MagickImage(recorded[i].Bitmap);
-					recorded[i].Bitmap.Dispose();
+					MagickImage mi = mia[i];
 					int addDelay;
-					if (i == 0 || !mi.Equals(mic[addi]))
+					if (mi != null)
 					{
 						mic.Add(mi);
 						++addi;
@@ -146,17 +173,18 @@ namespace GifCapture
 					int delayCs = delayMs / 10;
 					timeOffset = delayMs - (delayCs * 10);
 					mic[addi].AnimationDelay = delayCs + addDelay;
-					progress = i;
-					Invoke(new EmptyCallback(showProgress));
+					++progress;
+					if (progress % 32 == 0) Invoke(new EmptyCallback(showProgress));
 				}
-				for (int i = 0; i < mic.Count; ++i)
+				// mic.OptimizePlus();
+				progressMax = progress + (mic.Count);
+				Parallel.For(0, mic.Count, (i) =>
 				{
 					mic[i].Quantize(qs);
-					progress = i;
+					int pr = Interlocked.Increment(ref progress);
 					Invoke(new EmptyCallback(showProgress));
-				}
-				mic.OptimizePlus();
-				mic.Write(saveFileDialog.FileName);
+				});
+				mic.Write(fileName);
 			}
 			catch (Exception ex)
 			{
@@ -168,6 +196,7 @@ namespace GifCapture
 		void showProgress()
 		{
 			progressBar.Value = progress;
+			progressBar.Maximum = progressMax;
 		}
 
 		delegate void EmptyCallback();
