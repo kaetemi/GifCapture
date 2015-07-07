@@ -43,6 +43,7 @@
 			this.noFocus = new System.Windows.Forms.ToolStripButton();
 			this.timer = new System.Windows.Forms.Timer(this.components);
 			this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+			this.ramLabel = new System.Windows.Forms.ToolStripLabel();
 			this.toolContainer.ContentPanel.SuspendLayout();
 			this.toolContainer.TopToolStripPanel.SuspendLayout();
 			this.toolContainer.SuspendLayout();
@@ -96,11 +97,12 @@
             this.saveButton,
             this.eraseButton,
             this.sizeLabel,
+            this.ramLabel,
             this.storageUse,
             this.noFocus});
 			this.toolStrip.Location = new System.Drawing.Point(3, 0);
 			this.toolStrip.Name = "toolStrip";
-			this.toolStrip.Size = new System.Drawing.Size(392, 25);
+			this.toolStrip.Size = new System.Drawing.Size(425, 25);
 			this.toolStrip.TabIndex = 0;
 			// 
 			// recordButton
@@ -157,8 +159,8 @@
 			// storageUse
 			// 
 			this.storageUse.Name = "storageUse";
-			this.storageUse.Size = new System.Drawing.Size(87, 22);
-			this.storageUse.Text = "0 MiB 0 Frames";
+			this.storageUse.Size = new System.Drawing.Size(54, 22);
+			this.storageUse.Text = "0 Frames";
 			// 
 			// noFocus
 			// 
@@ -182,6 +184,12 @@
 			this.saveFileDialog.DefaultExt = "gif";
 			this.saveFileDialog.Filter = "GIF|*.gif";
 			// 
+			// ramLabel
+			// 
+			this.ramLabel.Name = "ramLabel";
+			this.ramLabel.Size = new System.Drawing.Size(66, 22);
+			this.ramLabel.Text = "0 MiB RAM";
+			// 
 			// MainWindow
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -194,6 +202,7 @@
 			this.TopMost = true;
 			this.TransparencyKey = System.Drawing.Color.Magenta;
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_FormClosing);
+			this.Load += new System.EventHandler(this.MainWindow_Load);
 			this.toolContainer.ContentPanel.ResumeLayout(false);
 			this.toolContainer.ContentPanel.PerformLayout();
 			this.toolContainer.TopToolStripPanel.ResumeLayout(false);
@@ -223,6 +232,7 @@
 		private System.Windows.Forms.ToolStrip progressTool;
 		private System.Windows.Forms.ToolStripProgressBar progressBar;
 		private System.Windows.Forms.ToolStripButton noFocus;
+		private System.Windows.Forms.ToolStripLabel ramLabel;
 
 
 	}

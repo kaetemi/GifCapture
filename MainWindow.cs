@@ -54,7 +54,8 @@ namespace GifCapture
 			lastTick = newTick;
 			recorded.Add(new FrameInfo() { Bitmap = bmp, Time = diffTick });
 			bytesUsed += (long)(recordSize.Width * recordSize.Height * 4);
-			storageUse.Text = (bytesUsed / 1024 / 1024).ToString() + " MiB " + recorded.Count + " Frames";
+			storageUse.Text = /*(bytesUsed / 1024 / 1024).ToString() + " MiB " +*/ recorded.Count + " Frames";
+			updateRamLabel();
 		}
 
 		private void toolContainer_ContentPanel_Resize(object sender, EventArgs e)
@@ -91,10 +92,21 @@ namespace GifCapture
 
 		private void eraseButton_Click(object sender, EventArgs e)
 		{
+			Parallel.For(0, recorded.Count, (i) =>
+			{
+				recorded[i].Bitmap.Dispose();
+			});
 			recorded.Clear();
+			GC.Collect();
 			bytesUsed = 0;
-			storageUse.Text = "0 MiB 0 Frames";
+			storageUse.Text = "0 Frames";
+			updateRamLabel();
 			FormBorderStyle = FormBorderStyle.Sizable;
+		}
+
+		void updateRamLabel()
+		{
+			ramLabel.Text = (System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / 1024 / 1024).ToString() + " MiB RAM";
 		}
 
 		private void saveButton_Click(object sender, EventArgs e)
@@ -185,6 +197,12 @@ namespace GifCapture
 					Invoke(new EmptyCallback(showProgress));
 				});
 				mic.Write(fileName);
+				Parallel.For(0, mic.Count, (i) =>
+				{
+					mic[i].Dispose();
+				});
+				mic.Dispose();
+				GC.Collect();
 			}
 			catch (Exception ex)
 			{
@@ -197,6 +215,7 @@ namespace GifCapture
 		{
 			progressBar.Value = progress;
 			progressBar.Maximum = progressMax;
+			updateRamLabel();
 		}
 
 		delegate void EmptyCallback();
@@ -219,6 +238,11 @@ namespace GifCapture
 			{
 				t.Abort();
 			}
+		}
+
+		private void MainWindow_Load(object sender, EventArgs e)
+		{
+			updateRamLabel();
 		}
 	}
 }
